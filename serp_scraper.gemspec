@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'serp_scraper'
-  s.version     = '0.0.2'
+  s.version     = '0.0.3'
   s.date        = '2017-05-26'
 
   s.homepage    = 'https://github.com/kjellberg'
