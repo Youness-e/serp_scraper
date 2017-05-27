@@ -9,6 +9,6 @@ response = google.search('payday loans')
 
 response.results.each do |result|
   puts "#{result[:position]}: #{result[:full_url]}"
-  # => "1: website.com"
+  # => "1: https://website.com/ranking/page/"
 end
 ```
