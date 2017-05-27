@@ -15,7 +15,14 @@ gem 'serp_scraper'
 ```
 
 ## Examples
-If you are just starting, check out the [EXAMPLES](https://github.com/kjellberg/serp_scraper/blob/master/EXAMPLES.md) file.
+```ruby
+s = SerpScraper.new(engine: 'google')
+res = s.search('buy cars onlines')
+puts res.results[0]
+# => {:position=>1, :title=>"Buying From CarMax", :scheme=>"https", :domain=>"www.carmax.com", :url=>"/car-buying-process", :full_url=>"https://www.carmax.com/car-buying-process"}
+```
+
+If you are just starting, check out the [EXAMPLES](https://github.com/kjellberg/serp_scraper/blob/master/EXAMPLES.md) file for more examples.
 
 ## Support
 - [github.com/kjellberg/serp_scraper/issues](https://github.com/kjellberg/serp_scraper/issues)
