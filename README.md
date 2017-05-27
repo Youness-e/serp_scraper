@@ -15,10 +15,11 @@ gem 'serp_scraper'
 ```
 
 ## Examples
-```ruby
-s = SerpScraper.new(engine: 'google')
-res = s.search('buy cars onlines')
-puts res.results[0]
+
+```ruby 
+google = SerpScraper.new(engine: 'google', tld: 'com')
+first_result = google.search('buy cars onlines').results[0]
+puts first_result
 # => {:position=>1, :title=>"Buying From CarMax", :scheme=>"https", :domain=>"www.carmax.com", :url=>"/car-buying-process", :full_url=>"https://www.carmax.com/car-buying-process"}
 ```
 
