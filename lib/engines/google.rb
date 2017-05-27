@@ -3,7 +3,9 @@ class SerpScraper::Google
   attr_accessor :user_agent
 
   def initialize
-    @browser = Mechanize.new
+    @browser = Mechanize.new { |agent|
+      agent.user_agent_alias = 'Mac Safari'
+    }
     
     @parameters = Hash.new 
     @parameters['gbv'] = 1
