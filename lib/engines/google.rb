@@ -46,7 +46,7 @@ class SerpScraper::Google
     doc     = Nokogiri::HTML(html)
     results = Array.new
 
-    rows = doc.css('h3.r a')
+    rows = doc.css('h3.r > a')
     rows.each_with_index do |row, i|
       begin
         href = Addressable::URI.parse(row["href"])
