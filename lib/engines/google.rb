@@ -2,7 +2,9 @@ class SerpScraper::Google
   attr_accessor :tld
   attr_accessor :user_agent
 
-  def initialize
+  def initialize(tld)
+    self.tld = tld
+
     @browser = Mechanize.new { |agent|
       agent.user_agent_alias = 'Mac Safari'
     }
@@ -17,8 +19,6 @@ class SerpScraper::Google
     @parameters['oe'] = 'utf-8'
     @parameters['site'] = 'webhp'
     @parameters['source'] = 'hp'
-
-    self.tld = 'se'
   end
 
   def search(keyword)

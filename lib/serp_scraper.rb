@@ -1,10 +1,13 @@
 class SerpScraper
   attr_accessor :engine
 
-  def initialize(engine = "google")
+  def initialize(params)
+    engine = params[:engine] || 'google'
+    tld = params[:tld] || 'com'
+
     case engine
     when "google"
-      @engine = Google.new
+      @engine = Google.new(tld)
     end
   end
 
@@ -14,9 +17,16 @@ class SerpScraper
 end
 
 def test
-  google    = SerpScraper.new("google")
-  response  = google.search("casino faktura")
-  response
+  google = SerpScraper.new(engine: 'google', tld: 'se')
+
+  # Set language to Swedish
+  google.engine.parameter('hl', 'sv')
+
+  # GO, FETCH!
+  response = google.search("casino faktura")
+
+  # Return search results
+  response.results
 end
 
 require 'uri'
