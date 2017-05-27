@@ -15,11 +15,12 @@ end
 
 ## Country/TLD specific search
 ```ruby
-# Usees google.se for swedish results
+# Set '.se' as TLD for swedish results
 s = SerpScraper.new(engine: 'google', tld: 'se')
 
-# Set language to Swedish
+# Set language parameter to swedish
 s.engine.parameter('hl', 'sv')
 
 response = s.search('köp bilar online')
+...
 ```
