@@ -21,6 +21,8 @@ s = SerpScraper.new(engine: 'google', tld: 'se')
 # Set language parameter to swedish
 s.engine.parameter('hl', 'sv')
 
-response = s.search('köp bilar online')
-...
+s.search('köp bilar online').results.each do |result|
+  puts result
+  # => {:position=>1, :title=>"kvd.se - Bilauktioner på nätet", :scheme=>"https", :domain=>"www.kvd.se", :url=>"/", :full_url=>"https://www.kvd.se/"}
+end
 ```
