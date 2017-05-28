@@ -17,6 +17,6 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency 'mechanize', '~> 1.6.0'
   s.add_runtime_dependency 'addressable', '~> 2.5'
-  s.add_runtime_dependency 'nokogiri', '~> 2.9', '>= 2.9.4'
+  s.add_runtime_dependency 'nokogiri', '~> 1.6'
   s.add_runtime_dependency 'deathbycaptcha', '~> 5.0.0'
 end
