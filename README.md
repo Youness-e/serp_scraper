@@ -33,7 +33,6 @@ If you are just starting, check out the [EXAMPLES](https://github.com/kjellberg/
 
 ### Goals
 - Add more search engines like Bing & Yahoo
-- Add DeathByCaptcha support for captcha solving
 
 ## Dependencies
 - [mechanize](https://github.com/sparklemotion/mechanize)
