@@ -2,6 +2,7 @@ class SerpScraper::Google
   attr_accessor :tld
   attr_accessor :user_agent
   attr_accessor :browser
+  attr_accessor :dbc
 
   def initialize(tld)
     # Make tld global
@@ -33,35 +34,44 @@ class SerpScraper::Google
     # Create build google search url
     search_url = build_query_url_from_keyword(keyword)
 
-    # Do the Googleing
-    response = @browser.get(search_url, :referer => "https://www.google.#{@tld}")
-
-    # 503 error = Google Captcha
-    tries = 1 
-    while response.code[/503/] and tries <= 3
-      # Try to solve with captcha 
-      solve_captcha(response.uri.to_s)
-
-      # Do another search
-      response = @browser.get(search_url)
-
-      tries += 1
+    begin
+      # Do the Googleing
+      response = @browser.get(search_url, :referer => "https://www.google.#{@tld}")
+      return build_serp_response(response)
+    rescue Mechanize::ResponseCodeError => e
+      case e.response_code.to_i
+      when 503
+        if self.dbc
+          return try_with_captcha(e.page)
+        else
+          raise "503: Blocked by captcha :("
+        end
+      end
     end
-    
-    return build_serp_response(response) if response.code == "200"
 
-    # @todo: Look for and solve captchas.
-    puts "Did not get a 200 response. Maybe a captcha error?"
   end
 
-  def solve_captcha(captcha_url)
-    puts "trying to solve captcha on url #{captcha_url}"
-    
-    page = @browser.get(captcha_url)
-    doc = Nokogiri::HTML(page.content)
+  def try_with_captcha(page)    
+    #page = @browser.get(captcha_url)
+    doc = Nokogiri::HTML(page.body)
 
-    image_url = Addressable::URI.parse('http://ipv4.google.com/' + doc.css('img')[0]["src"]).normalize
-    puts "Captcha url: " + image_url
+    image_url = Addressable::URI.parse('http://ipv4.google.com' + doc.css('img')[0]["src"])
+    image = @browser.get(image_url.to_s)
+
+    # Create a client (:socket and :http clients are available)
+    dbc = self.dbc
+    captcha = dbc.decode!(raw: image.body)
+    
+    params = {
+      q: image_url.query_values['q'],
+      continue: image_url.query_values['continue'],
+      id: image_url.query_values['id'],
+      captcha: captcha.text,
+      submit: 'Submit'
+    }
+
+    captcha_response = @browser.get('http://ipv4.google.com/sorry/index', params, page.uri.to_s)
+    build_serp_response(captcha_response)
   end
 
   def build_serp_response(response)

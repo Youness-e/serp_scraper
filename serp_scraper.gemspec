@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'serp_scraper'
-  s.version     = '0.0.3'
+  s.version     = '1.0.0'
   s.date        = '2017-05-26'
 
   s.homepage    = 'https://github.com/kjellberg'
@@ -18,4 +18,5 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'mechanize', '~> 2.7', '>= 2.7.5'
   s.add_runtime_dependency 'addressable', '~> 2.5'
   s.add_runtime_dependency 'nokogiri', '~> 2.9', '>= 2.9.4'
+  s.add_runtime_dependency 'deathbycaptcha', '~> 5.0.0'
 end

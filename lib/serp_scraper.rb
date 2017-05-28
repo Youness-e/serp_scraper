@@ -21,6 +21,10 @@ class SerpScraper
     @engine.browser.set_proxy(address, port, user, password)
   end
 
+  def deathbycaptcha(username, password)
+    @engine.dbc = DeathByCaptcha.new(username, password, :http)
+  end
+
   def search(keyword)
     @engine.search(keyword)
   end
