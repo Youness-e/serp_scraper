@@ -90,7 +90,9 @@ class SerpScraper::Google
     results = Array.new
 
     rows = doc.css('h3.r > a')
-    rows.each_with_index do |row, i|
+
+    position = 1
+    rows.each do |row|
       begin
         href = Addressable::URI.parse(row["href"])
 
@@ -99,8 +101,8 @@ class SerpScraper::Google
 
         url = Addressable::URI.parse(external_url)
 
-        results.push({
-          position: i + 1,
+        position += 1 if results.push({
+          position: position,
           title: row.content,
           scheme: url.scheme,
           domain: url.host,
