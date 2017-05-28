@@ -101,9 +101,9 @@ class SerpScraper::Google
 
         url = Addressable::URI.parse(external_url)
 
-        next unless url.host # Only add valid URL's (ignore images, news etc)
+        next if url.host # Only add valid URL's (ignore images, news etc)
 
-        if results.push({
+        results.push({
           position: position,
           title: row.content,
           scheme: url.scheme,
