@@ -89,7 +89,7 @@ class SerpScraper::Google
     doc     = Nokogiri::HTML(html)
     results = Array.new
 
-    rows = doc.css('h3.r > a')
+    rows = doc.css('div.rc h3.r > a')
 
     position = 1
     rows.each do |row|
