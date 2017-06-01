@@ -89,7 +89,7 @@ class SerpScraper::Google
     doc     = Nokogiri::HTML(html)
     results = Array.new
 
-    rows = doc.css('div.rc h3.r > a')
+    rows = doc.css("h3.r a:not(.sla)")
 
     position = 1
     rows.each do |row|
@@ -101,16 +101,17 @@ class SerpScraper::Google
 
         url = Addressable::URI.parse(external_url)
 
+        puts row['href']
         next unless url.host # Only add valid URL's (ignore images, news etc)
 
-        results.push({
+        results << {
           position: position,
           title: row.content,
           scheme: url.scheme,
           domain: url.host,
           url: url.request_uri,
           full_url: url.to_s
-        })
+        }
 
         position += 1
 
