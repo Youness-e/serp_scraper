@@ -100,8 +100,6 @@ class SerpScraper::Google
         external_url = href.query_values['url']  unless href.query_values['url'] == nil
 
         url = Addressable::URI.parse(external_url)
-
-        puts row['href']
         next unless url.host # Only add valid URL's (ignore images, news etc)
 
         results << {
