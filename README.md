@@ -11,7 +11,7 @@ $ gem install serp_scraper
 ```
 Or include it in your project's Gemfile with Bundler:
 ```ruby
-gem 'serp_scraper'
+gem 'serp_scraper', github: 'kjellberg/serp_scraper'
 ```
 
 ## Examples
