@@ -80,12 +80,18 @@ class SerpScraper::Google
     sr.user_agent = @browser.user_agent
     sr.url        = response.uri.to_s
     sr.html       = response.content
-    sr.organic    = extract_results(sr.html)
+    sr.organic    = extract_organic(sr.html)
+    sr.adwords    = extract_adwords(sr.html)
 
     sr # Return sr
   end
 
-  def extract_results(html)
+  def extract_adwords(html)
+    doc     = Nokogiri::HTML(html)
+    results = Array.new
+  end
+
+  def extract_organic(html)
     doc     = Nokogiri::HTML(html)
     results = Array.new
 
