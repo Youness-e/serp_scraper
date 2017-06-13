@@ -80,7 +80,7 @@ class SerpScraper::Google
     sr.user_agent = @browser.user_agent
     sr.url        = response.uri.to_s
     sr.html       = response.content
-    sr.results    = extract_results(sr.html)
+    sr.organic    = extract_results(sr.html)
 
     sr # Return sr
   end
