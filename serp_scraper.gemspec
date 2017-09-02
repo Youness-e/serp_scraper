@@ -19,5 +19,5 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'addressable', '~> 2.5'
   s.add_runtime_dependency 'nokogiri', '~> 1.6'
   s.add_runtime_dependency 'deathbycaptcha', '~> 5.0.0'
-  s.add_runtime_dependency 'wakir', '~> 6.0.0'
+  s.add_runtime_dependency 'wakir'
 end
