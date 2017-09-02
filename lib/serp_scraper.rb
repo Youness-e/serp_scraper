@@ -3,6 +3,7 @@ require 'mechanize'
 require 'addressable/uri'
 require 'nokogiri'
 require 'deathbycaptcha'
+require 'watir'
 
 class SerpScraper
   attr_accessor :engine
@@ -18,7 +19,8 @@ class SerpScraper
   end
 
   def set_proxy(address, port, user = nil, password = nil)
-    @engine.browser.set_proxy(address, port, user, password)
+    # @todo: deprecated message for user & password
+    @engine.set_proxy(address, port)
   end
 
   def deathbycaptcha(username, password)
@@ -27,6 +29,24 @@ class SerpScraper
 
   def search(keyword)
     @engine.search(keyword)
+  end
+end
+
+def hund
+  s = SerpScraper.new(engine: 'google', tld: 'se')
+  s.search("vad är min ip")
+end
+
+def katt
+  s = SerpScraper.new(engine: 'google', tld: 'se')
+
+  s.deathbycaptcha('ranktracker', 'rd41e21970')
+  s.engine.parameter('hl', 'sv')
+  s.set_proxy('191.101.72.152', 80)
+
+  k = s.search("mitt ipnr")
+  k.organic.each do |result|
+    puts result[:position].to_s + " -> " + result[:domain].to_s
   end
 end
 

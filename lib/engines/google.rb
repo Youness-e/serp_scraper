@@ -8,10 +8,13 @@ class SerpScraper::Google
     # Make tld global
     @tld = tld
 
+    # Empty proxy
+    @proxy = nil
+
     # Create new Mechanize object
-    @browser = Mechanize.new { |agent|
-      agent.user_agent_alias = 'Mac Safari'
-    }
+    # @browser = Mechanize.new { |agent|
+    #   agent.user_agent = 'Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko'
+    # }
 
     # Set standard query parameters
     @parameters = {
@@ -21,13 +24,40 @@ class SerpScraper::Google
       pws: 0,
       nfrpr: 1,
       ie: 'utf-8',
-      oe: 'utf-8',
-      site: 'webhp',
-      source: 'hp'
+      oe: 'utf-8'
     }
   end
 
+  def set_proxy(address, port)
+    @proxy = "#{address}:#{port}"
+  end
+
   def search(keyword)
+    # Add keyword to parameters
+    @parameters['q'] = keyword
+
+    if @proxy
+      @browser = Watir::Browser.new :chrome, :switches => ["--proxy-server=#{@proxy}"]
+    else
+      @browser = Watir::Browser.new :chrome
+    end
+
+    @google_url = "https://www.google.#{@tld}?num=100&complete=0&pws=0&nfrpr=1&ie=utf-8&oe=utf-8&hl=sv"
+
+    begin
+      @browser.goto @google_url
+      @browser.text_field(name: 'q').set keyword
+      @browser.button(name: 'btnK').click
+
+      html = @browser.html
+      return build_serp_response
+    rescue
+      raise 'Error. Probably blocked by CAPTCHA or something'
+    end
+  end
+
+  def _search(keyword)
+
     # Add keyword to parameters
     @parameters['q'] = keyword
 
@@ -55,8 +85,14 @@ class SerpScraper::Google
     #page = @browser.get(captcha_url)
     doc = Nokogiri::HTML(page.body)
 
-    image_url = Addressable::URI.parse('http://ipv4.google.com' + doc.css('img')[0]["src"])
-    image = @browser.get(image_url.to_s)
+    puts doc
+
+    begin
+      image_url = Addressable::URI.parse('http://ipv4.google.com' + doc.css('img')[0]["src"])
+      image = @browser.get(image_url.to_s)
+    rescue
+      raise "Could not find CAPTCHA-image"
+    end
 
     # Create a client (:socket and :http clients are available)
     dbc = self.dbc
@@ -74,14 +110,14 @@ class SerpScraper::Google
     build_serp_response(captcha_response)
   end
 
-  def build_serp_response(response)
+  def build_serp_response
     sr            = SerpScraper::SerpResponse.new
     sr.keyword    = @parameters['q']
-    sr.user_agent = @browser.user_agent
-    sr.url        = response.uri.to_s
-    sr.html       = response.content
-    sr.organic    = extract_organic(sr.html)
-    sr.adwords    = extract_adwords(sr.html)
+    sr.user_agent = nil # @todo: fix 
+    sr.url        = nil
+    sr.html       = @browser.html
+    sr.organic    = extract_organic(@browser.html)
+    sr.adwords    = extract_adwords(@browser.html)
 
     sr # Return sr
   end
@@ -99,11 +135,15 @@ class SerpScraper::Google
 
     position = 1
     rows.each do |row|
-      begin
+      
         href = Addressable::URI.parse(row["href"])
 
-        external_url = href.query_values['q']    unless href.query_values['q'] == nil
-        external_url = href.query_values['url']  unless href.query_values['url'] == nil
+        # puts row
+
+        # external_url = href.query_values['q']    unless href.query_values['q'] == nil
+        # external_url = href.query_values['url']  unless href.query_values['url'] == nil
+
+        external_url = href
 
         url = Addressable::URI.parse(external_url)
         next unless url.host # Only add valid URL's (ignore images, news etc)
@@ -119,9 +159,7 @@ class SerpScraper::Google
 
         position += 1
 
-      rescue
-        next
-      end
+      
     end
 
     results
