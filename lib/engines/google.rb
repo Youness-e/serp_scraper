@@ -51,6 +51,7 @@ class SerpScraper::Google
       html = @browser.html
       return build_serp_response
     rescue
+      @browser.quit
       raise 'Error. Probably blocked by CAPTCHA or something'
     end
   end
@@ -117,6 +118,8 @@ class SerpScraper::Google
     sr.html       = @browser.html
     sr.organic    = extract_organic(@browser.html)
     sr.adwords    = extract_adwords(@browser.html)
+
+    @browser.quit # Quit browser session
 
     sr # Return sr
   end
