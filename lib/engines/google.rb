@@ -18,7 +18,6 @@ class SerpScraper::Google
 
     # Set standard query parameters
     @parameters = {
-      gbv: 1,
       complete: 0,
       num: 100,
       pws: 0,
@@ -42,7 +41,7 @@ class SerpScraper::Google
       @browser = Watir::Browser.new :chrome
     end
 
-    @google_url = "https://www.google.#{@tld}?num=100&complete=0&pws=0&nfrpr=1&ie=utf-8&oe=utf-8&hl=sv"
+    @google_url = build_query_url
 
     begin
       @browser.goto @google_url
@@ -169,11 +168,11 @@ class SerpScraper::Google
     @parameters[key] = value
   end
 
-  def build_query_url_from_keyword(keyword)
+  def build_query_url
     uri = Addressable::URI.new
     uri.host = "www.google.#{@tld}"
     uri.scheme = "https"
-    uri.path = "/search"
+    uri.path = "/"
     uri.query_values = @parameters
     uri.to_s
   end
