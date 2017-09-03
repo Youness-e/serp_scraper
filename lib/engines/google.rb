@@ -15,9 +15,9 @@ class SerpScraper::Google
 
     # Set standard query parameters
     @parameters = {
-      gbv: 1,
       complete: 0,
       num: 100,
+      client: 'navclient',
       pws: 0,
       nfrpr: 1,
       ie: 'utf-8',
@@ -55,8 +55,13 @@ class SerpScraper::Google
     #page = @browser.get(captcha_url)
     doc = Nokogiri::HTML(page.body)
 
-    image_url = Addressable::URI.parse('http://ipv4.google.com' + doc.css('img')[0]["src"])
-    image = @browser.get(image_url.to_s)
+    begin
+      image_url = Addressable::URI.parse('http://ipv4.google.com' + doc.css('img')[0]["src"])
+      image = @browser.get(image_url.to_s)
+    rescue
+      puts doc
+      raise 'Could not find CAPTCHA image'
+    end
 
     # Create a client (:socket and :http clients are available)
     dbc = self.dbc
