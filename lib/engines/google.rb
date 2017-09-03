@@ -15,6 +15,7 @@ class SerpScraper::Google
 
     # Set standard query parameters
     @parameters = {
+      gbv: 1,
       complete: 0,
       num: 100,
       client: 'navclient',
@@ -80,6 +81,7 @@ class SerpScraper::Google
   end
 
   def build_serp_response(response)
+
     sr            = SerpScraper::SerpResponse.new
     sr.keyword    = @parameters['q']
     sr.user_agent = @browser.user_agent

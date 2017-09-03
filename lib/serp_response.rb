@@ -8,7 +8,7 @@ class SerpScraper::SerpResponse
   attr_accessor :html
 
   def results
-    warn "[DEPRECATION] `results` is deprecated.  Please use `organic` instead."
+    warn "[DEPRECATION] `results` is deprecated.  Please use `organic` instead!"
     organic
   end
 end
