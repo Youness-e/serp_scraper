@@ -3,6 +3,7 @@ class SerpScraper::Google
   attr_accessor :user_agent
   attr_accessor :browser
   attr_accessor :dbc
+  attr_accessor :parameters
 
   def initialize(tld)
     # Make tld global
@@ -24,7 +25,8 @@ class SerpScraper::Google
       ie: 'utf-8',
       oe: 'utf-8',
       site: 'webhp',
-      source: 'hp'
+      source: 'hp',
+      gfe_rd: 'cr'
     }
   end
 

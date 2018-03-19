@@ -7,7 +7,7 @@ require 'deathbycaptcha'
 class SerpScraper
   attr_accessor :engine
 
-  def initialize(params)
+  def initialize(params = {})
     engine = params[:engine] || 'google'
     tld = params[:tld] || 'com'
 
