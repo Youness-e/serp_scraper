@@ -3,6 +3,7 @@ require 'mechanize'
 require 'addressable/uri'
 require 'nokogiri'
 require 'deathbycaptcha'
+require 'simpleidn'
 
 class SerpScraper
   attr_accessor :engine
@@ -32,3 +33,11 @@ end
 
 require 'engines/google'
 require 'serp_response'
+
+def test
+  s = SerpScraper.new
+  s.engine.parameter('hl', 'sv')
+  s.engine.parameter('gl', 'se')
+  response = s.search('helglån utan uc')
+  response.organic
+end
