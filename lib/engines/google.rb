@@ -101,36 +101,70 @@ class SerpScraper::Google
   end
 
   def extract_organic(html)
-    doc     = Nokogiri::HTML(html)
+    doc = Nokogiri::HTML(html)
     results = Array.new
 
-    rows = doc.css("h3.r a:not(.sla)")
+    rows = doc.css("#ires > ol > .g")
 
-    position = 1
+
+    position = 0
     rows.each do |row|
-      begin
-        href = Addressable::URI.parse(row["href"])
 
-        external_url = href.query_values['q']    unless href.query_values['q'] == nil
-        external_url = href.query_values['url']  unless href.query_values['url'] == nil
+      next unless row.at('h3.r a')
+      position += 1
+      extras = []
+      sublinks = []
 
-        url = Addressable::URI.parse(external_url)
-        next unless url.host # Only add valid URL's (ignore images, news etc)
-
-        results << {
-          position: position,
-          title: row.content,
-          scheme: url.scheme,
-          domain: url.host,
-          url: url.request_uri,
-          full_url: url.to_s
-        }
-
-        position += 1
-
-      rescue
-        next
+      # Check for featured snippet box container.
+      if row.at('.hp-xpdbox')
+        extras << 'featured_snippet'
       end
+
+      # Check for sub links.
+      if row.at('.osl')
+        extras << 'sublinks'
+        row.at('.osl').css('a').each do |link|
+          href = Addressable::URI.parse(link["href"])
+          external_link = href.query_values['q']    unless href.query_values['q'] == nil
+          external_link = href.query_values['url']  unless href.query_values['url'] == nil
+          next if external_link.nil?
+          external_link = Addressable::URI.parse(external_link)
+          sublinks << { title: link.content, url: external_link.request_uri }
+        end
+      end
+
+      # Check for cached version links.
+      if row.at('.A8ul6')
+        extras << 'cached'
+      end
+
+      # Find title element
+      title_element = row.at('h3.r a')
+      next unless title_element && title_element["href"] && title_element["href"].length > 3
+      
+      # Parse url from title element
+      href = Addressable::URI.parse(title_element["href"])
+      external_url = href.query_values['q']    unless href.query_values['q'] == nil
+      external_url = href.query_values['url']  unless href.query_values['url'] == nil
+      next if external_url.nil?
+
+      url = Addressable::URI.parse(external_url)
+      next if url.nil?
+
+      # Only add valid URL's (ignore images, news etc)
+      unicode_domain = SimpleIDN.to_unicode(url.host)
+
+      results << {
+        position: position,
+        title: title_element.content,
+        scheme: url.scheme,
+        domain: unicode_domain,
+        url: url.request_uri,
+        full_url: "#{url.scheme}://#{unicode_domain}#{url.request_uri}",
+        extras: extras,
+        sublinks: sublinks
+      }
+
     end
 
     results
