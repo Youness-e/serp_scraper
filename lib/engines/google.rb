@@ -44,42 +44,10 @@ class SerpScraper::Google
     rescue Mechanize::ResponseCodeError => e
       case e.response_code.to_i
       when 503
-        if self.dbc
-          return try_with_captcha(e.page)
-        else
-          raise SerpScraper::CaptchaException
-        end
+        raise SerpScraper::CaptchaException
       end
     end
 
-  end
-
-  def try_with_captcha(page)    
-    #page = @browser.get(captcha_url)
-    doc = Nokogiri::HTML(page.body)
-
-    begin
-      image_url = Addressable::URI.parse('http://ipv4.google.com' + doc.css('img')[0]["src"])
-      image = @browser.get(image_url.to_s)
-    rescue
-      puts doc
-      raise 'Could not find CAPTCHA image'
-    end
-
-    # Create a client (:socket and :http clients are available)
-    dbc = self.dbc
-    captcha = dbc.decode!(raw: image.body)
-    
-    params = {
-      q: image_url.query_values['q'],
-      continue: image_url.query_values['continue'],
-      id: image_url.query_values['id'],
-      captcha: captcha.text,
-      submit: 'Submit'
-    }
-
-    captcha_response = @browser.get('http://ipv4.google.com/sorry/index', params, page.uri.to_s)
-    build_serp_response(captcha_response)
   end
 
   def build_serp_response(response)
