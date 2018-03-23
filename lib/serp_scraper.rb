@@ -40,6 +40,10 @@ def test
   s.engine.parameter('hl', 'sv')
   s.engine.parameter('gl', 'se')
  # s.set_proxy('191.102.155.76', 80, 'kjell', 'berg')
-  response = s.search('helglån utan uc')
-  response.organic
+  begin
+    response = s.search('helglån utan uc')
+    response.organic
+  rescue SerpScraper::CaptchaException => e
+    "Error: #{e.message}"
+  end
 end
