@@ -31,6 +31,7 @@ class SerpScraper
   end
 end
 
+require 'exceptions/captcha'
 require 'engines/google'
 require 'serp_response'
 
@@ -38,6 +39,7 @@ def test
   s = SerpScraper.new
   s.engine.parameter('hl', 'sv')
   s.engine.parameter('gl', 'se')
+ # s.set_proxy('191.102.155.76', 80, 'kjell', 'berg')
   response = s.search('helglån utan uc')
   response.organic
 end

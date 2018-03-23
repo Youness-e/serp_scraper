@@ -11,7 +11,7 @@ class SerpScraper::Google
 
     # Create new Mechanize object
     @browser = Mechanize.new { |agent|
-      agent.user_agent_alias = 'Mac Safari'
+      agent.user_agent_alias = 'Windows IE 7'
     }
 
     # Set standard query parameters
@@ -47,7 +47,7 @@ class SerpScraper::Google
         if self.dbc
           return try_with_captcha(e.page)
         else
-          raise "503: Blocked by captcha :("
+          raise SerpScraper::CaptchaException
         end
       end
     end
