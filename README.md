@@ -18,7 +18,7 @@ gem 'serp_scraper', github: 'kjellberg/serp_scraper'
 
 ```ruby 
 google = SerpScraper.new(engine: 'google', tld: 'com')
-first_result = google.search('buy cars onlines').results[0]
+first_result = google.search('buy cars onlines').organic[0]
 puts first_result
 # => {:position=>1, :title=>"Buying From CarMax", :scheme=>"https", :domain=>"www.carmax.com", :url=>"/car-buying-process", :full_url=>"https://www.carmax.com/car-buying-process"}
 ```
@@ -30,7 +30,7 @@ require 'serp_scraper'
 s = SerpScraper.new(engine: 'google')
 response = s.search('buy cars online')
 
-response.results.each do |result|
+response.organic.each do |result|
   puts result
   # => {:position=>1, :title=>"Buying From CarMax", :scheme=>"https", :domain=>"www.carmax.com", :url=>"/car-buying-process", :full_url=>"https://www.carmax.com/car-buying-process"}
 end
@@ -41,28 +41,28 @@ end
 # Set '.se' as TLD for swedish results
 s = SerpScraper.new(engine: 'google', tld: 'se')
 
-# Set language parameter to swedish
+# Set 'sv' (Swedish) as language parameter
 s.engine.parameter('hl', 'sv')
 
-s.search('köp bilar online').results.each do |result|
-  puts result
-  # => {:position=>1, :title=>"kvd.se - Bilauktioner på nätet", :scheme=>"https", :domain=>"www.kvd.se", :url=>"/", :full_url=>"https://www.kvd.se/"}
-end
-```
+# Set 'se' (Sweden) as country parameter.
+s.engine.parameter('gl', 'se')
 
-#### Use DeathByCaptcha to solve 503 errors (captcha)
-```ruby
-google = SerpScraper.new(engine: 'google', tld: 'com')
-google.deathbycaptcha('dbc username', 'dbc password')
-google.search('buy cars online').results[0]
-# => {:position=>1, :title=>"Buying From CarMax", :scheme=>"https", :domain=>"www.carmax.com", :url=>"/car-buying-process", :full_url=>"https://www.carmax.com/car-buying-process"}
+begin
+  response = s.search('casino online')
+  puts response.organic
+rescue SerpScraper::CaptchaException => e
+  puts "Blocked by captcha"
+end
 ```
 
 #### Hide server IP with a proxy
 ```ruby
 google = SerpScraper.new(engine: 'google', tld: 'com')
+
+# Set proxy host (required), port (required), user (optional) and password (optional).
 google.set_proxy(host, port, user, password)
-google.search('buy cars online').results[0]
+
+google.search('buy cars online').organic[0]
 # => {:position=>1, :title=>"Buying From CarMax", :scheme=>"https", :domain=>"www.carmax.com", :url=>"/car-buying-process", :full_url=>"https://www.carmax.com/car-buying-process"}
 ```
 
