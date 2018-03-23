@@ -6,7 +6,6 @@ class SerpScraper::Google
   attr_accessor :parameters
 
   def initialize(tld)
-    # Make tld global
     @tld = tld
 
     # Create new Mechanize object
@@ -16,12 +15,11 @@ class SerpScraper::Google
 
     # Set standard query parameters
     @parameters = {
-      gbv: 1,
-      complete: 0,
-      num: 100,
-      client: 'navclient',
-      pws: 0,
-      nfrpr: 1,
+      gbv: 1, # 1=no javascript, 2=javascript.
+      complete: 0, # Do not use autocomplete
+      num: 100, # 100 results per page
+      pws: 0, # Remove history-based personalization (personalization)
+      nfpr: 0, # Turn on auto correction of spelling
       ie: 'utf-8',
       oe: 'utf-8',
       site: 'webhp',
