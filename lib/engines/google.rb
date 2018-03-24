@@ -23,8 +23,7 @@ class SerpScraper::Google
       ie: 'utf-8',
       oe: 'utf-8',
       site: 'webhp',
-      source: 'hp',
-      gfe_rd: 'cr'
+      source: 'hp'
     }
   end
 
@@ -37,7 +36,8 @@ class SerpScraper::Google
 
     begin
       # Do the Googleing
-      response = @browser.get(search_url, :referer => "https://www.google.#{@tld}")
+      ncr = @browser.get("https://www.google.#{@tld}/ncr")
+      response = @browser.get(search_url)
       return build_serp_response(response)
     rescue Mechanize::ResponseCodeError => e
       case e.response_code.to_i
