@@ -36,7 +36,7 @@ class SerpScraper::Google
 
     begin
       # Do the Googleing
-      ncr = @browser.get("https://www.google.#{@tld}/ncr")
+      @browser.get("https://www.google.#{@tld}")
       response = @browser.get(search_url)
       return build_serp_response(response)
     rescue Mechanize::ResponseCodeError => e
