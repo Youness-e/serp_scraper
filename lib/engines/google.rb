@@ -12,7 +12,7 @@ class SerpScraper::Google
     @browser = Mechanize.new { |agent|
         agent.user_agent_alias = ['Windows IE 7', 'Mac Safari'].sample
         agent.keep_alive = false
-        agent.max_history = 0
+        agent.max_history = 5
     }
 
     # Set standard query parameters
@@ -39,6 +39,7 @@ class SerpScraper::Google
     begin
       # Do the Googleing
       @browser.get("https://www.google.#{@tld}")
+      sleep(rand(4.0..8.5)
       response = @browser.get(search_url)
       return build_serp_response(response)
     rescue Mechanize::ResponseCodeError => e
