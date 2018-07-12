@@ -10,7 +10,8 @@ class SerpScraper::Google
 
     # Create new Mechanize object
     @browser = Mechanize.new { |agent|
-      agent.user_agent_alias = 'Windows IE 7'
+        agent.user_agent_alias = ['Windows IE 7', 'Mac Safari'].sample
+      agent.keep_alive = false
     }
 
     # Set standard query parameters
@@ -107,7 +108,7 @@ class SerpScraper::Google
       # Find title element
       title_element = row.at('h3.r a')
       next unless title_element && title_element["href"] && title_element["href"].length > 3
-      
+
       # Parse url from title element
       href = Addressable::URI.parse(title_element["href"])
       external_url = href.query_values['q']    unless href.query_values['q'] == nil
