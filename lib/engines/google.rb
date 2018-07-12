@@ -39,7 +39,7 @@ class SerpScraper::Google
     begin
       # Do the Googleing
       @browser.get("https://www.google.#{@tld}")
-      sleep(rand(4.0..8.5)
+      sleep(rand(4.0..8.5))
       response = @browser.get(search_url)
       return build_serp_response(response)
     rescue Mechanize::ResponseCodeError => e
