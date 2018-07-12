@@ -11,7 +11,8 @@ class SerpScraper::Google
     # Create new Mechanize object
     @browser = Mechanize.new { |agent|
         agent.user_agent_alias = ['Windows IE 7', 'Mac Safari'].sample
-      agent.keep_alive = false
+        agent.keep_alive = false
+        agent.max_history = 0
     }
 
     # Set standard query parameters
