@@ -19,7 +19,7 @@ class SerpScraper
   end
 
   def set_proxy(address, port, user = nil, password = nil)
-    @engine.browser.set_proxy(address, port, user, password)
+    @engine.set_proxy(address, port, user, password)
   end
 
   def deathbycaptcha(username, password)
