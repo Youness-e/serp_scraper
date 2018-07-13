@@ -8,13 +8,6 @@ class SerpScraper::Google
   def initialize(tld)
     @tld = tld
 
-    # Create new Mechanize object
-    @browser = Mechanize.new { |agent|
-        agent.user_agent_alias = ['Windows IE 7', 'Mac Safari'].sample
-        agent.keep_alive = false
-        agent.max_history = 5
-    }
-
     # Set standard query parameters
     @parameters = {
       gbv: 1, # 1=no javascript, 2=javascript.
@@ -27,6 +20,12 @@ class SerpScraper::Google
       site: 'webhp',
       source: 'hp'
     }
+
+    @address, @port, @user, @password = nil, nil, nil, nil
+  end
+
+  def set_proxy(address, port, user = nil, password = nil)
+    @address, @port, @user, @password = address, port, user, password
   end
 
   def search(keyword)
@@ -35,13 +34,21 @@ class SerpScraper::Google
 
     # Create build google search url
     search_url = build_query_url_from_keyword(keyword)
+    result = nil
 
     begin
-      # Do the Googleing
-      @browser.get("https://www.google.#{@tld}")
-      sleep(rand(4.0..8.5))
-      response = @browser.get(search_url)
-      return build_serp_response(response)
+      Mechanize.start do |browser|
+        browser.user_agent_alias = ['Windows IE 7', 'Mac Safari'].sample
+        browser.keep_alive = false
+        browser.max_history = 5
+        browser.set_proxy(@address, @port, @user, @password)
+        # Do the Googleing
+        browser.get("https://www.google.#{@tld}")
+        sleep(rand(4.0..8.5))
+        response = browser.get(search_url)
+        result = build_serp_response(response, browser)
+      end
+      return result
     rescue Mechanize::ResponseCodeError => e
       case e.response_code.to_i
       when 503
@@ -51,11 +58,11 @@ class SerpScraper::Google
 
   end
 
-  def build_serp_response(response)
+  def build_serp_response(response, browser)
 
     sr            = SerpScraper::SerpResponse.new
     sr.keyword    = @parameters['q']
-    sr.user_agent = @browser.user_agent
+    sr.user_agent = browser.user_agent
     sr.url        = response.uri.to_s
     sr.html       = response.content
     sr.organic    = extract_organic(sr.html)
