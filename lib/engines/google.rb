@@ -39,9 +39,9 @@ class SerpScraper::Google
     begin
       Mechanize.start do |browser|
         browser.user_agent_alias = ['Windows IE 7', 'Mac Safari'].sample
-        browser.keep_alive = false
         browser.max_history = 5
         browser.set_proxy(@address, @port, @user, @password)
+        sleep(0.5)
         # Do the Googleing
         browser.get("https://www.google.#{@tld}")
         sleep(rand(4.0..8.5))
