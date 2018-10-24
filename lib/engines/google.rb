@@ -41,10 +41,10 @@ class SerpScraper::Google
         browser.user_agent_alias = ['Windows IE 7', 'Mac Safari'].sample
         browser.max_history = 5
         browser.set_proxy(@address, @port, @user, @password)
-        sleep(0.5)
+        sleep(0.05)
         # Do the Googleing
         browser.get("https://www.google.#{@tld}")
-        sleep(rand(4.0..8.5))
+        sleep(rand(0.01..0.1))
         response = browser.get(search_url)
         result = build_serp_response(response, browser)
       end
